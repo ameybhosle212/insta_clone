@@ -3,8 +3,14 @@ const User = require('../models/users');
 const jwt = require('jsonwebtoken')
 const route = require('express').Router()
 
-route.get("/",(req,res)=>{
-    res.send("asas")
+route.get("/:id", async (req,res)=>{
+    const id = req.params.id;
+    await User.findById(id).then(data =>{
+        if(data){
+            console.log(data);
+            return res.json(data);
+        }return res.json({"DATA":false})
+    })
 })
 
 
@@ -42,12 +48,13 @@ route.post("/getAllPost", async (req,res)=>{
     var data2 = [];
     data.map((val)=>{
         data2.push({
+            'id':val.user._id,
             'name':val.user.name,
             'title':val.title,
             'bodyPost':val.bodyPost
         })
     })
-    return res.json({"Data":data2});
+    return res.json(data2);
 })
 
 module.exports = route;

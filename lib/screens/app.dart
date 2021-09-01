@@ -37,24 +37,24 @@ class _AppState extends State<App> {
                       children: [
                         ListView.builder(
                           shrinkWrap: true,
-                          itemCount: snapshot.data["Data"].length,
+                          itemCount: snapshot.data.length,
                           itemBuilder: (context, index) {
-                            var data = snapshot.data["Data"][index];
+                            var data = snapshot.data[index];
                             return ListTile(
                               leading: Icon(Icons.add),
                               title: Text(
-                                '$data["name"]',
+                                '${data["name"]}',
                                 textScaleFactor: 1.5,
                               ),
                               trailing: Icon(Icons.done),
-                              subtitle: Text('$data["title"]'),
+                              subtitle: Text('${data["bodyPost"]}'),
                               selected: true,
                               onTap: () {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          SecondRoute(datas: data[index].id)),
+                                          SecondRoute(datas: data["id"])),
                                 );
                               },
                             );
@@ -75,6 +75,7 @@ class _AppState extends State<App> {
 
 Future getData() async {
   var url = Uri.parse('http://localhost:3001/getAllPost');
-  var response = await http.get(url);
+  var response = await http.post(url);
+  print(response.body);
   return json.decode(response.body);
 }
