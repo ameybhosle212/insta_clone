@@ -7,7 +7,7 @@ const UserSchema = new mongoose.Schema({
         type:Boolean,
         default:false
     },
-    password:{
+    email:{
         type:String
     },
     posts:[

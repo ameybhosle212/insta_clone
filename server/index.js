@@ -6,7 +6,7 @@ require('dotenv').config()
 
 // DB
 
-mongoose.connect(process.env.Mongo_URL,{useNewUrlParser:true,useNewUrlParser:true}).then(()=>{
+mongoose.connect(process.env.Mongo_URL,{useNewUrlParser:true,useNewUrlParser:true,useUnifiedTopology:true}).then(()=>{
     console.log("DB CONNECTED");
 })
 

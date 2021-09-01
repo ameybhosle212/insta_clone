@@ -37,17 +37,17 @@ class _AppState extends State<App> {
                       children: [
                         ListView.builder(
                           shrinkWrap: true,
-                          itemCount: snapshot.data.length,
+                          itemCount: snapshot.data["Data"].length,
                           itemBuilder: (context, index) {
-                            var data = snapshot.data[index];
+                            var data = snapshot.data["Data"][index];
                             return ListTile(
                               leading: Icon(Icons.add),
                               title: Text(
-                                '${snapshot.data[index]['name']}',
+                                '$data["name"]',
                                 textScaleFactor: 1.5,
                               ),
                               trailing: Icon(Icons.done),
-                              subtitle: Text('This is subtitle'),
+                              subtitle: Text('$data["title"]'),
                               selected: true,
                               onTap: () {
                                 Navigator.push(
@@ -74,7 +74,7 @@ class _AppState extends State<App> {
 }
 
 Future getData() async {
-  var url = Uri.parse('https://jsonplaceholder.typicode.com/users');
+  var url = Uri.parse('http://localhost:3001/getAllPost');
   var response = await http.get(url);
   return json.decode(response.body);
 }
