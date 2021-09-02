@@ -49,6 +49,7 @@ class Login extends StatelessWidget {
                 RaisedButton(
                   onPressed: () async {
                     if (_formKey.currentState.validate()) {
+                      _formKey.currentState.save();
                       var response = await http.post(
                         Uri.parse("http://127.0.0.1:3001/login"),
                         body: jsonEncode(
@@ -58,7 +59,6 @@ class Login extends StatelessWidget {
                           'Charset': 'utf-8'
                         },
                       );
-                      _formKey.currentState.save();
                       if (response.body != null &&
                           response.statusCode == 200 &&
                           json.decode(response.body)["id"] != null &&
