@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:instagram_clone/screens/secondroute.dart';
@@ -74,8 +74,15 @@ class _AppState extends State<App> {
 }
 
 Future getData() async {
-  var url = Uri.parse('http://localhost:3001/getAllPost');
+  var url = Uri.parse(_localhost());
   var response = await http.post(url);
   print(response.body);
   return json.decode(response.body);
+}
+
+String _localhost() {
+  if (Platform.isAndroid)
+    return 'http://10.0.2.2:3001/getAllPost';
+  else // for iOS simulator
+    return 'http://localhost:3001/getAllPost';
 }

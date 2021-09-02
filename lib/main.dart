@@ -1,10 +1,91 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:instagram_clone/screens/app.dart';
 import 'package:instagram_clone/screens/feed.dart';
 import 'package:instagram_clone/screens/profile.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
-void main() {
-  runApp(MyApp());
+void main() async {
+  SharedPreferences _prefs = await SharedPreferences.getInstance();
+  runApp(
+      _prefs.get('token') == null && _prefs.get('id') == null ? Login() : My());
+}
+
+class Login extends StatelessWidget {
+  String _email, _password;
+  final _formKey = GlobalKey<FormState>();
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: SafeArea(
+        child: Scaffold(
+          body: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                TextFormField(
+                  // validator: (value) {
+                  //   if (value == null) {
+                  //     return "Enter Correct value";
+                  //   }
+                  //   return value;
+                  // },
+                  decoration: InputDecoration(
+                    hintText: 'ameybhosle3@gn.com',
+                    labelText: 'Enter Email',
+                  ),
+                  onSaved: (value) => _email = value,
+                ),
+                TextFormField(
+                  decoration: InputDecoration(
+                    labelText: 'Password',
+                    hintText: 'ama12@',
+                  ),
+                  obscureText: true,
+                  onSaved: (value) => _password = value,
+                ),
+                RaisedButton(
+                  onPressed: () async {
+                    if (_formKey.currentState.validate()) {
+                      var response = await http.post(
+                        Uri.parse("http://127.0.0.1:3001/login"),
+                        body: jsonEncode(
+                            {'email': _email, 'password': _password}),
+                        headers: <String, String>{
+                          'Content-Type': 'application/json',
+                          'Charset': 'utf-8'
+                        },
+                      );
+                      _formKey.currentState.save();
+                      if (response.body != null &&
+                          response.statusCode == 200 &&
+                          json.decode(response.body)["id"] != null &&
+                          json.decode(response.body)["token"] != null) {
+                        SharedPreferences _pref =
+                            await SharedPreferences.getInstance();
+                        _pref.setString('id', json.decode(response.body)["id"]);
+                        _pref.setString(
+                            "token", json.decode(response.body)["token"]);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MyApp(),
+                          ),
+                        );
+                      }
+                    }
+                  },
+                  child: Text('Login'),
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class MyApp extends StatelessWidget {
